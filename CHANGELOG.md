@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Packet Broker Agent to subscribe to uplink traffic from Packet Broker. See `pba` configuration section.
+- Packet Broker Agent to subscribe to uplink traffic from and publish uplink traffic to Packet Broker. See `pba` configuration section.
 
 ### Changed
 
