@@ -61,8 +61,13 @@ func NormalizeFlags(f *pflag.FlagSet, name string) pflag.NormalizedName {
 }
 
 func SelectFieldMask(cmdFlags *pflag.FlagSet, fieldMaskFlags ...*pflag.FlagSet) (paths []string) {
+	all := false
 	cmdFlags.Visit(func(flag *pflag.Flag) {
 		flagName := toUnderscore.Replace(flag.Name)
+		if flagName == "all" {
+			all = true
+			return
+		}
 		for _, fieldMaskFlags := range fieldMaskFlags {
 			if b, err := fieldMaskFlags.GetBool(flagName); err == nil && b {
 				paths = append(paths, flagName)
@@ -70,6 +75,16 @@ func SelectFieldMask(cmdFlags *pflag.FlagSet, fieldMaskFlags ...*pflag.FlagSet) 
 			}
 		}
 	})
+
+	if all {
+		paths = []string{}
+		for _, set := range fieldMaskFlags {
+			set.VisitAll(func(f *pflag.Flag) {
+				paths = append(paths, toUnderscore.Replace(f.Name))
+			})
+		}
+	}
+
 	return
 }
 
