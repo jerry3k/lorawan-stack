@@ -133,6 +133,7 @@ var (
 func init() {
 	applicationsLinkGetCommand.Flags().AddFlagSet(applicationIDFlags())
 	applicationsLinkGetCommand.Flags().AddFlagSet(selectApplicationLinkFlags)
+	applicationsLinkGetCommand.Flags().Bool("all", false, "Select all application link fields")
 	applicationsLinkCommand.AddCommand(applicationsLinkGetCommand)
 	applicationsLinkSetCommand.Flags().AddFlagSet(applicationIDFlags())
 	applicationsLinkSetCommand.Flags().AddFlagSet(setApplicationLinkFlags)
