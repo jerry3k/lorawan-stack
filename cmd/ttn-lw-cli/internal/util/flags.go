@@ -101,6 +101,22 @@ func UpdateFieldMask(cmdFlags *pflag.FlagSet, fieldMaskFlags ...*pflag.FlagSet) 
 	return
 }
 
+func DropForbiddenFieldMaskPaths(paths []string, forbiddenPaths []string) []string {
+	dropped := []string{}
+	for _, forbidden := range forbiddenPaths {
+		for index, path := range paths {
+			if forbidden == path {
+				dropped = append(dropped, forbidden)
+				paths[index] = paths[len(paths)-1]
+				paths = paths[:len(paths)-1]
+				break
+			}
+		}
+	}
+
+	return dropped
+}
+
 func FieldFlags(v interface{}, prefix ...string) *pflag.FlagSet {
 	t := reflect.Indirect(reflect.ValueOf(v)).Type()
 	return fieldMaskFlags(prefix, t, false)

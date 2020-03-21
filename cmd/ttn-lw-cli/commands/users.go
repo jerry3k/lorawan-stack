@@ -32,6 +32,8 @@ var (
 	selectUserFlags     = util.FieldMaskFlags(&ttnpb.User{})
 	setUserFlags        = util.FieldFlags(&ttnpb.User{})
 	profilePictureFlags = &pflag.FlagSet{}
+
+	forbiddenSelectUserFlags = []string{"password", "temporary_password"}
 )
 
 func userIDFlags() *pflag.FlagSet {
@@ -72,6 +74,10 @@ var (
 		Short:   "List users",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			paths := util.SelectFieldMask(cmd.Flags(), selectUserFlags)
+			dropped := util.DropForbiddenFieldMaskPaths(paths, forbiddenSelectUserFlags)
+			for _, path := range dropped {
+				logger.Warnf("Ignoring forbidden field mask `%s`", path)
+			}
 
 			is, err := api.Dial(ctx, config.IdentityServerGRPCAddress)
 			if err != nil {
@@ -97,6 +103,10 @@ var (
 		Short: "Search for users",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			paths := util.SelectFieldMask(cmd.Flags(), selectUserFlags)
+			dropped := util.DropForbiddenFieldMaskPaths(paths, forbiddenSelectUserFlags)
+			for _, path := range dropped {
+				logger.Warnf("Ignoring forbidden field mask `%s`", path)
+			}
 
 			req, opt, getTotal := getSearchEntitiesRequest(cmd.Flags())
 			req.FieldMask.Paths = paths
@@ -124,6 +134,10 @@ var (
 				return errNoUserID
 			}
 			paths := util.SelectFieldMask(cmd.Flags(), selectUserFlags)
+			dropped := util.DropForbiddenFieldMaskPaths(paths, forbiddenSelectUserFlags)
+			for _, path := range dropped {
+				logger.Warnf("Ignoring forbidden field mask `%s`", path)
+			}
 
 			is, err := api.Dial(ctx, config.IdentityServerGRPCAddress)
 			if err != nil {
