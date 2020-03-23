@@ -61,13 +61,16 @@ func NormalizeFlags(f *pflag.FlagSet, name string) pflag.NormalizedName {
 }
 
 func SelectFieldMask(cmdFlags *pflag.FlagSet, fieldMaskFlags ...*pflag.FlagSet) (paths []string) {
-	all := false
+	if all, _ := cmdFlags.GetBool("all"); all {
+		for _, fieldMaskFlags := range fieldMaskFlags {
+			fieldMaskFlags.VisitAll(func(flag *pflag.Flag) {
+				paths = append(paths, toUnderscore.Replace(flag.Name))
+			})
+		}
+		return
+	}
 	cmdFlags.Visit(func(flag *pflag.Flag) {
 		flagName := toUnderscore.Replace(flag.Name)
-		if flagName == "all" {
-			all = true
-			return
-		}
 		for _, fieldMaskFlags := range fieldMaskFlags {
 			if b, err := fieldMaskFlags.GetBool(flagName); err == nil && b {
 				paths = append(paths, flagName)
@@ -75,16 +78,6 @@ func SelectFieldMask(cmdFlags *pflag.FlagSet, fieldMaskFlags ...*pflag.FlagSet) 
 			}
 		}
 	})
-
-	if all {
-		paths = []string{}
-		for _, set := range fieldMaskFlags {
-			set.VisitAll(func(f *pflag.Flag) {
-				paths = append(paths, toUnderscore.Replace(f.Name))
-			})
-		}
-	}
-
 	return
 }
 
@@ -99,22 +92,6 @@ func UpdateFieldMask(cmdFlags *pflag.FlagSet, fieldMaskFlags ...*pflag.FlagSet) 
 		}
 	})
 	return
-}
-
-func DropForbiddenFieldMaskPaths(paths []string, forbiddenPaths []string) []string {
-	dropped := []string{}
-	for _, forbidden := range forbiddenPaths {
-		for index, path := range paths {
-			if forbidden == path {
-				dropped = append(dropped, forbidden)
-				paths[index] = paths[len(paths)-1]
-				paths = paths[:len(paths)-1]
-				break
-			}
-		}
-	}
-
-	return dropped
 }
 
 func FieldFlags(v interface{}, prefix ...string) *pflag.FlagSet {
