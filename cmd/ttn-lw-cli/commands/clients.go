@@ -70,10 +70,7 @@ var (
 		Short:   "List clients",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			paths := util.SelectFieldMask(cmd.Flags(), selectClientFlags)
-			dropped := util.DropForbiddenFieldMaskPaths(paths, forbiddenSelectClientFlags)
-			for _, path := range dropped {
-				logger.Warnf("Ignoring forbidden field mask `%s`", path)
-			}
+			paths = ttnpb.ExcludeFields(paths, forbiddenSelectClientFlags...)
 
 			is, err := api.Dial(ctx, config.IdentityServerGRPCAddress)
 			if err != nil {
@@ -100,10 +97,7 @@ var (
 		Short: "Search for clients",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			paths := util.SelectFieldMask(cmd.Flags(), selectClientFlags)
-			dropped := util.DropForbiddenFieldMaskPaths(paths, forbiddenSelectClientFlags)
-			for _, path := range dropped {
-				logger.Warnf("Ignoring forbidden field mask `%s`", path)
-			}
+			paths = ttnpb.ExcludeFields(paths, forbiddenSelectClientFlags...)
 
 			req, opt, getTotal := getSearchEntitiesRequest(cmd.Flags())
 			req.FieldMask.Paths = paths
@@ -131,10 +125,7 @@ var (
 				return errNoClientID
 			}
 			paths := util.SelectFieldMask(cmd.Flags(), selectClientFlags)
-			dropped := util.DropForbiddenFieldMaskPaths(paths, forbiddenSelectClientFlags)
-			for _, path := range dropped {
-				logger.Warnf("Ignoring forbidden field mask `%s`", path)
-			}
+			paths = ttnpb.ExcludeFields(paths, forbiddenSelectClientFlags...)
 
 			is, err := api.Dial(ctx, config.IdentityServerGRPCAddress)
 			if err != nil {
