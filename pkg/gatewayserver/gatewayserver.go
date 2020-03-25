@@ -744,6 +744,10 @@ func (gs *GatewayServer) handleLocationUpdates(conn connectionEntry) {
 
 			// TODO: Handle multiple antenna locations (https://github.com/TheThingsNetwork/lorawan-stack/issues/2006).
 			if ok && len(locations) > 0 {
+				locations[0].Source = ttnpb.SOURCE_REGISTRY
+				if antennas[0].Location.Equal(*locations[0]) {
+					break
+				}
 				antennas[0].Location = *locations[0]
 				_, err := registry.Update(ctx, &ttnpb.UpdateGatewayRequest{
 					Gateway: ttnpb.Gateway{
