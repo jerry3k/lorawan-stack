@@ -733,18 +733,15 @@ func (gs *GatewayServer) handleLocationUpdates(conn connectionEntry) {
 			status, _, ok := conn.StatusStats()
 			locations := status.AntennaLocations
 			antennas := conn.Gateway().Antennas
-			if len(conn.Gateway().Antennas) == 0 {
-				conn.Gateway().Antennas = []ttnpb.GatewayAntenna{
-					{
-						Location: ttnpb.Location{},
-					},
-				}
-				antennas = conn.Gateway().Antennas
-			}
 
 			// TODO: Handle multiple antenna locations (https://github.com/TheThingsNetwork/lorawan-stack/issues/2006).
 			if ok && len(locations) > 0 {
-				locations[0].Source = ttnpb.SOURCE_REGISTRY
+				if len(antennas) == 0 {
+					// Add an antenna if none are present
+					conn.Gateway().Antennas = []ttnpb.GatewayAntenna{{}}
+					antennas = conn.Gateway().Antennas
+				}
+				locations[0].Source = ttnpb.SOURCE_GPS
 				if antennas[0].Location.Equal(*locations[0]) {
 					break
 				}

@@ -671,7 +671,7 @@ func TestGatewayServer(t *testing.T) {
 										Time: time.Unix(424242, 0),
 										AntennaLocations: []*ttnpb.Location{
 											{
-												Source:    ttnpb.SOURCE_REGISTRY,
+												Source:    ttnpb.SOURCE_GPS,
 												Altitude:  10,
 												Latitude:  12,
 												Longitude: 14,
@@ -680,7 +680,7 @@ func TestGatewayServer(t *testing.T) {
 									},
 								},
 								ExpectLocation: ttnpb.Location{
-									Source: ttnpb.SOURCE_REGISTRY,
+									Source: ttnpb.SOURCE_GPS,
 								},
 							},
 							{
@@ -692,7 +692,7 @@ func TestGatewayServer(t *testing.T) {
 									},
 								},
 								ExpectLocation: ttnpb.Location{
-									Source: ttnpb.SOURCE_REGISTRY,
+									Source: ttnpb.SOURCE_GPS,
 								},
 							},
 							{
@@ -703,7 +703,7 @@ func TestGatewayServer(t *testing.T) {
 										Time: time.Unix(42424242, 0),
 										AntennaLocations: []*ttnpb.Location{
 											{
-												Source:    ttnpb.SOURCE_REGISTRY,
+												Source:    ttnpb.SOURCE_GPS,
 												Altitude:  10,
 												Latitude:  12,
 												Longitude: 14,
@@ -712,7 +712,7 @@ func TestGatewayServer(t *testing.T) {
 									},
 								},
 								ExpectLocation: ttnpb.Location{
-									Source:    ttnpb.SOURCE_REGISTRY,
+									Source:    ttnpb.SOURCE_GPS,
 									Altitude:  10,
 									Latitude:  12,
 									Longitude: 14,
@@ -727,7 +727,7 @@ func TestGatewayServer(t *testing.T) {
 								})
 								a.So(err, should.BeNil)
 								gtw.Antennas[0].Location = ttnpb.Location{
-									Source: ttnpb.SOURCE_REGISTRY,
+									Source: ttnpb.SOURCE_GPS,
 								}
 								gtw.UpdateLocationFromStatus = tc.UpdateLocation
 								gtw, err = is.Get(ctx, &ttnpb.GetGatewayRequest{
