@@ -30,6 +30,8 @@ import (
 var (
 	selectOrganizationFlags = util.FieldMaskFlags(&ttnpb.Organization{})
 	setOrganizationFlags    = util.FieldFlags(&ttnpb.Organization{})
+
+	selectAllOrganizationFlags = util.SelectAllFlagSet("organization")
 )
 
 func organizationIDFlags() *pflag.FlagSet {
@@ -250,17 +252,17 @@ var (
 func init() {
 	organizationsListCommand.Flags().AddFlagSet(collaboratorFlags())
 	organizationsListCommand.Flags().AddFlagSet(selectOrganizationFlags)
-	organizationsListCommand.Flags().Bool("all", false, "Select all organization fields")
+	organizationsListCommand.Flags().AddFlagSet(selectAllOrganizationFlags)
 	organizationsListCommand.Flags().AddFlagSet(paginationFlags())
 	organizationsListCommand.Flags().AddFlagSet(orderFlags())
 	organizationsCommand.AddCommand(organizationsListCommand)
 	organizationsSearchCommand.Flags().AddFlagSet(searchFlags())
 	organizationsSearchCommand.Flags().AddFlagSet(selectOrganizationFlags)
-	organizationsSearchCommand.Flags().Bool("all", false, "Select all organization fields")
+	organizationsSearchCommand.Flags().AddFlagSet(selectAllOrganizationFlags)
 	organizationsCommand.AddCommand(organizationsSearchCommand)
 	organizationsGetCommand.Flags().AddFlagSet(organizationIDFlags())
 	organizationsGetCommand.Flags().AddFlagSet(selectOrganizationFlags)
-	organizationsGetCommand.Flags().Bool("all", false, "Select all organization fields")
+	organizationsGetCommand.Flags().AddFlagSet(selectAllOrganizationFlags)
 	organizationsCommand.AddCommand(organizationsGetCommand)
 	organizationsCreateCommand.Flags().AddFlagSet(organizationIDFlags())
 	organizationsCreateCommand.Flags().AddFlagSet(collaboratorFlags())

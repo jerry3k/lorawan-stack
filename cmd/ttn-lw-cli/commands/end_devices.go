@@ -44,6 +44,8 @@ var (
 	setEndDeviceFlags        = &pflag.FlagSet{}
 	endDeviceFlattenPaths    = []string{"provisioning_data"}
 	endDevicePictureFlags    = &pflag.FlagSet{}
+
+	selectAllEndDeviceFlags = util.SelectAllFlagSet("end devices")
 )
 
 func selectEndDeviceIDFlags() *pflag.FlagSet {
@@ -1108,18 +1110,18 @@ func init() {
 	endDevicesCommand.AddCommand(endDevicesListFrequencyPlans)
 	endDevicesListCommand.Flags().AddFlagSet(applicationIDFlags())
 	endDevicesListCommand.Flags().AddFlagSet(selectEndDeviceListFlags)
-	endDevicesListCommand.Flags().Bool("all", false, "Select all end device fields")
+	endDevicesListCommand.Flags().AddFlagSet(selectAllEndDeviceFlags)
 	endDevicesListCommand.Flags().AddFlagSet(paginationFlags())
 	endDevicesListCommand.Flags().AddFlagSet(orderFlags())
 	endDevicesCommand.AddCommand(endDevicesListCommand)
 	endDevicesSearchCommand.Flags().AddFlagSet(applicationIDFlags())
 	endDevicesSearchCommand.Flags().AddFlagSet(searchEndDevicesFlags())
 	endDevicesSearchCommand.Flags().AddFlagSet(selectApplicationFlags)
-	endDevicesSearchCommand.Flags().Bool("all", false, "Select all end device fields")
+	endDevicesSearchCommand.Flags().AddFlagSet(selectAllEndDeviceFlags)
 	endDevicesCommand.AddCommand(endDevicesSearchCommand)
 	endDevicesGetCommand.Flags().AddFlagSet(endDeviceIDFlags())
 	endDevicesGetCommand.Flags().AddFlagSet(selectEndDeviceFlags)
-	endDevicesGetCommand.Flags().Bool("all", false, "Select all end device fields")
+	endDevicesGetCommand.Flags().AddFlagSet(selectAllEndDeviceFlags)
 	endDevicesCommand.AddCommand(endDevicesGetCommand)
 	endDevicesCreateCommand.Flags().AddFlagSet(endDeviceIDFlags())
 	endDevicesCreateCommand.Flags().AddFlagSet(setEndDeviceFlags)

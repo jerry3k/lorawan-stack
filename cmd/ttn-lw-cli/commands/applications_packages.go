@@ -33,6 +33,8 @@ import (
 var (
 	selectApplicationPackageAssociationsFlags = util.FieldMaskFlags(&ttnpb.ApplicationPackageAssociation{})
 	setApplicationPackageAssociationsFlags    = util.FieldFlags(&ttnpb.ApplicationPackageAssociation{})
+
+	selectAllApplicationPackageAssociationsFlags = util.SelectAllFlagSet("application package association")
 )
 
 func applicationPackageAssociationIDFlags() *pflag.FlagSet {
@@ -264,12 +266,12 @@ func init() {
 	applicationsPackagesCommand.AddCommand(applicationsPackagesListCommand)
 	applicationsPackageAssociationGetCommand.Flags().AddFlagSet(applicationPackageAssociationIDFlags())
 	applicationsPackageAssociationGetCommand.Flags().AddFlagSet(selectApplicationPackageAssociationsFlags)
-	applicationsPackageAssociationGetCommand.Flags().Bool("all", false, "Select all application package association fields")
+	applicationsPackageAssociationGetCommand.Flags().AddFlagSet(selectAllApplicationPackageAssociationsFlags)
 	applicationsPackagesCommand.AddCommand(applicationsPackagesAssociationsCommand)
 	applicationsPackagesAssociationsCommand.AddCommand(applicationsPackageAssociationGetCommand)
 	applicationsPackageAssociationsListCommand.Flags().AddFlagSet(endDeviceIDFlags())
 	applicationsPackageAssociationsListCommand.Flags().AddFlagSet(selectApplicationPackageAssociationsFlags)
-	applicationsPackageAssociationsListCommand.Flags().Bool("all", false, "Select all application package association fields")
+	applicationsPackageAssociationsListCommand.Flags().AddFlagSet(selectAllApplicationPackageAssociationsFlags)
 	applicationsPackageAssociationsListCommand.Flags().AddFlagSet(paginationFlags())
 	applicationsPackagesAssociationsCommand.AddCommand(applicationsPackageAssociationsListCommand)
 	applicationsPackageAssociationSetCommand.Flags().AddFlagSet(applicationPackageAssociationIDFlags())

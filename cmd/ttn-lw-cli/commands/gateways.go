@@ -33,6 +33,8 @@ var (
 	selectGatewayFlags     = util.FieldMaskFlags(&ttnpb.Gateway{})
 	setGatewayFlags        = util.FieldFlags(&ttnpb.Gateway{})
 	setGatewayAntennaFlags = util.FieldFlags(&ttnpb.GatewayAntenna{}, "antenna")
+
+	selectAllGatewayFlags = util.SelectAllFlagSet("gateway")
 )
 
 func gatewayIDFlags() *pflag.FlagSet {
@@ -410,15 +412,15 @@ func init() {
 	gatewaysListCommand.Flags().AddFlagSet(selectGatewayFlags)
 	gatewaysListCommand.Flags().AddFlagSet(paginationFlags())
 	gatewaysListCommand.Flags().AddFlagSet(orderFlags())
-	gatewaysListCommand.Flags().Bool("all", false, "Show all gateway fields")
+	gatewaysListCommand.Flags().AddFlagSet(selectAllGatewayFlags)
 	gatewaysCommand.AddCommand(gatewaysListCommand)
 	gatewaysSearchCommand.Flags().AddFlagSet(searchFlags())
 	gatewaysSearchCommand.Flags().AddFlagSet(selectGatewayFlags)
-	gatewaysSearchCommand.Flags().Bool("all", false, "Show all gateway fields")
+	gatewaysSearchCommand.Flags().AddFlagSet(selectAllGatewayFlags)
 	gatewaysCommand.AddCommand(gatewaysSearchCommand)
 	gatewaysGetCommand.Flags().AddFlagSet(gatewayIDFlags())
 	gatewaysGetCommand.Flags().AddFlagSet(selectGatewayFlags)
-	gatewaysGetCommand.Flags().Bool("all", false, "Show all gateway fields")
+	gatewaysGetCommand.Flags().AddFlagSet(selectAllGatewayFlags)
 	gatewaysCommand.AddCommand(gatewaysGetCommand)
 	gatewaysCreateCommand.Flags().AddFlagSet(gatewayIDFlags())
 	gatewaysCreateCommand.Flags().AddFlagSet(collaboratorFlags())

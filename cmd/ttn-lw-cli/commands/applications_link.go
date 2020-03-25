@@ -31,6 +31,8 @@ import (
 var (
 	selectApplicationLinkFlags = util.FieldMaskFlags(&ttnpb.ApplicationLink{})
 	setApplicationLinkFlags    = util.FieldFlags(&ttnpb.ApplicationLink{})
+
+	selectAllApplicationLinkFlags = util.SelectAllFlagSet("application link")
 )
 
 var errNoApplicationLinkAPIKey = errors.DefineInvalidArgument("no_application_link_api_key", "no application link API key set")
@@ -133,7 +135,7 @@ var (
 func init() {
 	applicationsLinkGetCommand.Flags().AddFlagSet(applicationIDFlags())
 	applicationsLinkGetCommand.Flags().AddFlagSet(selectApplicationLinkFlags)
-	applicationsLinkGetCommand.Flags().Bool("all", false, "Select all application link fields")
+	applicationsLinkGetCommand.Flags().AddFlagSet(selectAllApplicationLinkFlags)
 	applicationsLinkCommand.AddCommand(applicationsLinkGetCommand)
 	applicationsLinkSetCommand.Flags().AddFlagSet(applicationIDFlags())
 	applicationsLinkSetCommand.Flags().AddFlagSet(setApplicationLinkFlags)

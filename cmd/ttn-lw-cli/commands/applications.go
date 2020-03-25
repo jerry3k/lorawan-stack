@@ -30,6 +30,8 @@ import (
 var (
 	selectApplicationFlags = util.FieldMaskFlags(&ttnpb.Application{})
 	setApplicationFlags    = util.FieldFlags(&ttnpb.Application{})
+
+	selectAllApplicationFlags = util.SelectAllFlagSet("application")
 )
 
 func applicationIDFlags() *pflag.FlagSet {
@@ -252,15 +254,15 @@ func init() {
 	applicationsListCommand.Flags().AddFlagSet(selectApplicationFlags)
 	applicationsListCommand.Flags().AddFlagSet(paginationFlags())
 	applicationsListCommand.Flags().AddFlagSet(orderFlags())
-	applicationsListCommand.Flags().Bool("all", false, "Show all application fields")
+	applicationsListCommand.Flags().AddFlagSet(selectAllApplicationFlags)
 	applicationsCommand.AddCommand(applicationsListCommand)
 	applicationsSearchCommand.Flags().AddFlagSet(searchFlags())
 	applicationsSearchCommand.Flags().AddFlagSet(selectApplicationFlags)
-	applicationsSearchCommand.Flags().Bool("all", false, "Show all application fields")
+	applicationsSearchCommand.Flags().AddFlagSet(selectAllApplicationFlags)
 	applicationsCommand.AddCommand(applicationsSearchCommand)
 	applicationsGetCommand.Flags().AddFlagSet(applicationIDFlags())
 	applicationsGetCommand.Flags().AddFlagSet(selectApplicationFlags)
-	applicationsGetCommand.Flags().Bool("all", false, "Show all application fields")
+	applicationsGetCommand.Flags().AddFlagSet(selectAllApplicationFlags)
 	applicationsCommand.AddCommand(applicationsGetCommand)
 	applicationsCreateCommand.Flags().AddFlagSet(applicationIDFlags())
 	applicationsCreateCommand.Flags().AddFlagSet(collaboratorFlags())

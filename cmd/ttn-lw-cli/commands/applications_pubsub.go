@@ -34,6 +34,8 @@ var (
 	setApplicationPubSubFlags          = util.FieldFlags(&ttnpb.ApplicationPubSub{})
 	natsProviderApplicationPubSubFlags = util.FieldFlags(&ttnpb.ApplicationPubSub_NATSProvider{}, "nats")
 	mqttProviderApplicationPubSubFlags = util.FieldFlags(&ttnpb.ApplicationPubSub_MQTTProvider{}, "mqtt")
+
+	selectAllApplicationPubSubFlags = util.SelectAllFlagSet("application pubsub")
 )
 
 func applicationPubSubIDFlags() *pflag.FlagSet {
@@ -300,11 +302,11 @@ func init() {
 	applicationsPubSubsCommand.AddCommand(applicationsPubSubsGetFormatsCommand)
 	applicationsPubSubsGetCommand.Flags().AddFlagSet(applicationPubSubIDFlags())
 	applicationsPubSubsGetCommand.Flags().AddFlagSet(selectApplicationPubSubFlags)
-	applicationsPubSubsGetCommand.Flags().Bool("all", false, "Select all application PubSub fields")
+	applicationsPubSubsGetCommand.Flags().AddFlagSet(selectAllApplicationPubSubFlags)
 	applicationsPubSubsCommand.AddCommand(applicationsPubSubsGetCommand)
 	applicationsPubSubsListCommand.Flags().AddFlagSet(applicationIDFlags())
 	applicationsPubSubsListCommand.Flags().AddFlagSet(selectApplicationPubSubFlags)
-	applicationsPubSubsListCommand.Flags().Bool("all", false, "Select all application PubSub fields")
+	applicationsPubSubsListCommand.Flags().AddFlagSet(selectAllApplicationPubSubFlags)
 	applicationsPubSubsCommand.AddCommand(applicationsPubSubsListCommand)
 	applicationsPubSubsSetCommand.Flags().AddFlagSet(applicationPubSubIDFlags())
 	applicationsPubSubsSetCommand.Flags().AddFlagSet(setApplicationPubSubFlags)

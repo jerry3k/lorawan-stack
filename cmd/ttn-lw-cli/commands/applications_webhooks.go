@@ -31,6 +31,8 @@ import (
 var (
 	selectApplicationWebhookFlags = util.FieldMaskFlags(&ttnpb.ApplicationWebhook{})
 	setApplicationWebhookFlags    = util.FieldFlags(&ttnpb.ApplicationWebhook{})
+
+	selectAllApplicationWebhookFlags = util.SelectAllFlagSet("application webhook")
 )
 
 func applicationWebhookIDFlags() *pflag.FlagSet {
@@ -223,11 +225,11 @@ func init() {
 	applicationsWebhooksCommand.AddCommand(applicationsWebhooksGetFormatsCommand)
 	applicationsWebhooksGetCommand.Flags().AddFlagSet(applicationWebhookIDFlags())
 	applicationsWebhooksGetCommand.Flags().AddFlagSet(selectApplicationWebhookFlags)
-	applicationsWebhooksGetCommand.Flags().Bool("all", false, "Select all application webhook fields")
+	applicationsWebhooksGetCommand.Flags().AddFlagSet(selectAllApplicationWebhookFlags)
 	applicationsWebhooksCommand.AddCommand(applicationsWebhooksGetCommand)
 	applicationsWebhooksListCommand.Flags().AddFlagSet(applicationIDFlags())
 	applicationsWebhooksListCommand.Flags().AddFlagSet(selectApplicationWebhookFlags)
-	applicationsWebhooksListCommand.Flags().Bool("all", false, "Select all application webhook fields")
+	applicationsWebhooksListCommand.Flags().AddFlagSet(selectAllApplicationWebhookFlags)
 	applicationsWebhooksCommand.AddCommand(applicationsWebhooksListCommand)
 	applicationsWebhooksSetCommand.Flags().AddFlagSet(applicationWebhookIDFlags())
 	applicationsWebhooksSetCommand.Flags().AddFlagSet(setApplicationWebhookFlags)

@@ -34,6 +34,8 @@ var (
 	profilePictureFlags = &pflag.FlagSet{}
 
 	forbiddenSelectUserFlags = []string{"password", "temporary_password"}
+
+	selectAllUserFlags = util.SelectAllFlagSet("user")
 )
 
 func userIDFlags() *pflag.FlagSet {
@@ -361,17 +363,17 @@ func init() {
 	profilePictureFlags.String("profile_picture", "", "upload the profile picture from this file")
 
 	usersListCommand.Flags().AddFlagSet(selectUserFlags)
-	usersListCommand.Flags().Bool("all", false, "Select all user fields")
+	usersListCommand.Flags().AddFlagSet(selectAllUserFlags)
 	usersListCommand.Flags().AddFlagSet(paginationFlags())
 	usersListCommand.Flags().AddFlagSet(orderFlags())
 	usersCommand.AddCommand(usersListCommand)
 	usersSearchCommand.Flags().AddFlagSet(searchFlags())
-	usersSearchCommand.Flags().Bool("all", false, "Select all user fields")
+	usersSearchCommand.Flags().AddFlagSet(selectAllUserFlags)
 	usersSearchCommand.Flags().AddFlagSet(selectUserFlags)
 	usersCommand.AddCommand(usersSearchCommand)
 	usersGetCommand.Flags().AddFlagSet(userIDFlags())
 	usersGetCommand.Flags().AddFlagSet(selectUserFlags)
-	usersGetCommand.Flags().Bool("all", false, "Select all user fields")
+	usersGetCommand.Flags().AddFlagSet(selectAllUserFlags)
 	usersCommand.AddCommand(usersGetCommand)
 	usersCreateCommand.Flags().AddFlagSet(userIDFlags())
 	usersCreateCommand.Flags().AddFlagSet(setUserFlags)

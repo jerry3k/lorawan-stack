@@ -32,6 +32,8 @@ var (
 	setClientFlags    = util.FieldFlags(&ttnpb.Client{})
 
 	forbiddenSelectClientFlags = []string{"secret"}
+
+	selectAllClientFlags = util.SelectAllFlagSet("client")
 )
 
 func clientIDFlags() *pflag.FlagSet {
@@ -263,17 +265,17 @@ var (
 func init() {
 	clientsListCommand.Flags().AddFlagSet(collaboratorFlags())
 	clientsListCommand.Flags().AddFlagSet(selectClientFlags)
-	clientsListCommand.Flags().Bool("all", false, "Select all client fields")
+	clientsListCommand.Flags().AddFlagSet(selectAllClientFlags)
 	clientsListCommand.Flags().AddFlagSet(paginationFlags())
 	clientsListCommand.Flags().AddFlagSet(orderFlags())
 	clientsCommand.AddCommand(clientsListCommand)
 	clientsSearchCommand.Flags().AddFlagSet(searchFlags())
 	clientsSearchCommand.Flags().AddFlagSet(selectClientFlags)
-	clientsSearchCommand.Flags().Bool("all", false, "Select all client fields")
+	clientsSearchCommand.Flags().AddFlagSet(selectAllClientFlags)
 	clientsCommand.AddCommand(clientsSearchCommand)
 	clientsGetCommand.Flags().AddFlagSet(clientIDFlags())
 	clientsGetCommand.Flags().AddFlagSet(selectClientFlags)
-	clientsGetCommand.Flags().Bool("all", false, "Select all client fields")
+	clientsGetCommand.Flags().AddFlagSet(selectAllClientFlags)
 	clientsCommand.AddCommand(clientsGetCommand)
 	clientsCreateCommand.Flags().AddFlagSet(clientIDFlags())
 	clientsCreateCommand.Flags().AddFlagSet(collaboratorFlags())

@@ -681,3 +681,10 @@ func setField(rv reflect.Value, path []string, v reflect.Value) error {
 	}
 	return fmt.Errorf("unknown field")
 }
+
+// SelectAllFlagSet returns a flagset with the --all flag
+func SelectAllFlagSet(what string) *pflag.FlagSet {
+	flagSet := &pflag.FlagSet{}
+	flagSet.Bool("all", false, fmt.Sprintf("select all %s fields", what))
+	return flagSet
+}
