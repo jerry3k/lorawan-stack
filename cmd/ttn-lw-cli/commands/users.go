@@ -33,8 +33,6 @@ var (
 	setUserFlags        = util.FieldFlags(&ttnpb.User{})
 	profilePictureFlags = &pflag.FlagSet{}
 
-	forbiddenSelectUserFlags = []string{"password", "temporary_password"}
-
 	selectAllUserFlags = util.SelectAllFlagSet("user")
 )
 
@@ -76,7 +74,7 @@ var (
 		Short:   "List users",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			paths := util.SelectFieldMask(cmd.Flags(), selectUserFlags)
-			paths = ttnpb.ExcludeFields(paths, forbiddenSelectUserFlags...)
+			paths = ttnpb.AllowedFields(paths, ttnpb.AllowedFieldMaskPathsForRPC["/ttn.lorawan.v3.UserRegistry/List"])
 
 			is, err := api.Dial(ctx, config.IdentityServerGRPCAddress)
 			if err != nil {
@@ -102,7 +100,7 @@ var (
 		Short: "Search for users",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			paths := util.SelectFieldMask(cmd.Flags(), selectUserFlags)
-			paths = ttnpb.ExcludeFields(paths, forbiddenSelectUserFlags...)
+			paths = ttnpb.AllowedFields(paths, ttnpb.AllowedFieldMaskPathsForRPC["/ttn.lorawan.v3.EntityRegistrySearch/SearchUsers"])
 
 			req, opt, getTotal := getSearchEntitiesRequest(cmd.Flags())
 			req.FieldMask.Paths = paths
@@ -130,7 +128,7 @@ var (
 				return errNoUserID
 			}
 			paths := util.SelectFieldMask(cmd.Flags(), selectUserFlags)
-			paths = ttnpb.ExcludeFields(paths, forbiddenSelectUserFlags...)
+			paths = ttnpb.AllowedFields(paths, ttnpb.AllowedFieldMaskPathsForRPC["/ttn.lorawan.v3.UserRegistry/Get"])
 
 			is, err := api.Dial(ctx, config.IdentityServerGRPCAddress)
 			if err != nil {

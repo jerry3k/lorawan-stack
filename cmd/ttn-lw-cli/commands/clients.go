@@ -31,8 +31,6 @@ var (
 	selectClientFlags = util.FieldMaskFlags(&ttnpb.Client{})
 	setClientFlags    = util.FieldFlags(&ttnpb.Client{})
 
-	forbiddenSelectClientFlags = []string{"secret"}
-
 	selectAllClientFlags = util.SelectAllFlagSet("client")
 )
 
@@ -72,8 +70,7 @@ var (
 		Short:   "List clients",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			paths := util.SelectFieldMask(cmd.Flags(), selectClientFlags)
-			paths = ttnpb.ExcludeFields(paths, forbiddenSelectClientFlags...)
-
+			paths = ttnpb.AllowedFields(paths, ttnpb.AllowedFieldMaskPathsForRPC["/ttn.lorawan.v3.ClientRegistry/List"])
 			is, err := api.Dial(ctx, config.IdentityServerGRPCAddress)
 			if err != nil {
 				return err
@@ -99,7 +96,7 @@ var (
 		Short: "Search for clients",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			paths := util.SelectFieldMask(cmd.Flags(), selectClientFlags)
-			paths = ttnpb.ExcludeFields(paths, forbiddenSelectClientFlags...)
+			paths = ttnpb.AllowedFields(paths, ttnpb.AllowedFieldMaskPathsForRPC["/ttn.lorawan.v3.EntityRegistrySearch/SearchClients"])
 
 			req, opt, getTotal := getSearchEntitiesRequest(cmd.Flags())
 			req.FieldMask.Paths = paths
@@ -127,7 +124,7 @@ var (
 				return errNoClientID
 			}
 			paths := util.SelectFieldMask(cmd.Flags(), selectClientFlags)
-			paths = ttnpb.ExcludeFields(paths, forbiddenSelectClientFlags...)
+			paths = ttnpb.AllowedFields(paths, ttnpb.AllowedFieldMaskPathsForRPC["/ttn.lorawan.v3.ClientRegistry/Get"])
 
 			is, err := api.Dial(ctx, config.IdentityServerGRPCAddress)
 			if err != nil {
