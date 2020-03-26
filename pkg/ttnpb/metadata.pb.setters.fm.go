@@ -2,29 +2,16 @@
 
 package ttnpb
 
-import fmt "fmt"
+import (
+	fmt "fmt"
+	time "time"
+
+	go_thethings_network_lorawan_stack_pkg_types "go.thethings.network/lorawan-stack/pkg/types"
+)
 
 func (dst *RxMetadata) SetFields(src *RxMetadata, paths ...string) error {
 	for name, subs := range _processPaths(paths) {
 		switch name {
-		case "gateway_ids":
-			if len(subs) > 0 {
-				var newDst, newSrc *GatewayIdentifiers
-				if src != nil {
-					newSrc = &src.GatewayIdentifiers
-				}
-				newDst = &dst.GatewayIdentifiers
-				if err := newDst.SetFields(newSrc, subs...); err != nil {
-					return err
-				}
-			} else {
-				if src != nil {
-					dst.GatewayIdentifiers = src.GatewayIdentifiers
-				} else {
-					var zero GatewayIdentifiers
-					dst.GatewayIdentifiers = zero
-				}
-			}
 		case "antenna_index":
 			if len(subs) > 0 {
 				return fmt.Errorf("'antenna_index' has no subfields, but %s were specified", subs)
@@ -206,6 +193,93 @@ func (dst *RxMetadata) SetFields(src *RxMetadata, paths ...string) error {
 				dst.Advanced = nil
 			}
 
+		case "source":
+			if len(subs) == 0 && src == nil {
+				dst.Source = nil
+				continue
+			} else if len(subs) == 0 {
+				dst.Source = src.Source
+				continue
+			}
+
+			subPathMap := _processPaths(subs)
+			if len(subPathMap) > 1 {
+				return fmt.Errorf("more than one field specified for oneof field '%s'", name)
+			}
+			for oneofName, oneofSubs := range subPathMap {
+				switch oneofName {
+				case "gateway_ids":
+					_, srcOk := src.Source.(*RxMetadata_GatewayIDs)
+					if !srcOk && src.Source != nil {
+						return fmt.Errorf("attempt to set oneof 'gateway_ids', while different oneof is set in source")
+					}
+					_, dstOk := dst.Source.(*RxMetadata_GatewayIDs)
+					if !dstOk && dst.Source != nil {
+						return fmt.Errorf("attempt to set oneof 'gateway_ids', while different oneof is set in destination")
+					}
+					if len(oneofSubs) > 0 {
+						var newDst, newSrc *GatewayIdentifiers
+						if !srcOk && !dstOk {
+							continue
+						}
+						if srcOk {
+							newSrc = src.Source.(*RxMetadata_GatewayIDs).GatewayIDs
+						}
+						if dstOk {
+							newDst = dst.Source.(*RxMetadata_GatewayIDs).GatewayIDs
+						} else {
+							newDst = &GatewayIdentifiers{}
+							dst.Source = &RxMetadata_GatewayIDs{GatewayIDs: newDst}
+						}
+						if err := newDst.SetFields(newSrc, oneofSubs...); err != nil {
+							return err
+						}
+					} else {
+						if src != nil {
+							dst.Source = src.Source
+						} else {
+							dst.Source = nil
+						}
+					}
+				case "packet_broker":
+					_, srcOk := src.Source.(*RxMetadata_PacketBroker)
+					if !srcOk && src.Source != nil {
+						return fmt.Errorf("attempt to set oneof 'packet_broker', while different oneof is set in source")
+					}
+					_, dstOk := dst.Source.(*RxMetadata_PacketBroker)
+					if !dstOk && dst.Source != nil {
+						return fmt.Errorf("attempt to set oneof 'packet_broker', while different oneof is set in destination")
+					}
+					if len(oneofSubs) > 0 {
+						var newDst, newSrc *PacketBrokerMetadata
+						if !srcOk && !dstOk {
+							continue
+						}
+						if srcOk {
+							newSrc = src.Source.(*RxMetadata_PacketBroker).PacketBroker
+						}
+						if dstOk {
+							newDst = dst.Source.(*RxMetadata_PacketBroker).PacketBroker
+						} else {
+							newDst = &PacketBrokerMetadata{}
+							dst.Source = &RxMetadata_PacketBroker{PacketBroker: newDst}
+						}
+						if err := newDst.SetFields(newSrc, oneofSubs...); err != nil {
+							return err
+						}
+					} else {
+						if src != nil {
+							dst.Source = src.Source
+						} else {
+							dst.Source = nil
+						}
+					}
+
+				default:
+					return fmt.Errorf("invalid oneof field: '%s.%s'", name, oneofName)
+				}
+			}
+
 		default:
 			return fmt.Errorf("invalid field: '%s'", name)
 		}
@@ -265,6 +339,147 @@ func (dst *Location) SetFields(src *Location, paths ...string) error {
 			} else {
 				var zero LocationSource
 				dst.Source = zero
+			}
+
+		default:
+			return fmt.Errorf("invalid field: '%s'", name)
+		}
+	}
+	return nil
+}
+
+func (dst *PacketBrokerMetadata) SetFields(src *PacketBrokerMetadata, paths ...string) error {
+	for name, subs := range _processPaths(paths) {
+		switch name {
+		case "message_id":
+			if len(subs) > 0 {
+				return fmt.Errorf("'message_id' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.MessageID = src.MessageID
+			} else {
+				var zero string
+				dst.MessageID = zero
+			}
+		case "forwarder_net_id":
+			if len(subs) > 0 {
+				return fmt.Errorf("'forwarder_net_id' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.ForwarderNetID = src.ForwarderNetID
+			} else {
+				var zero go_thethings_network_lorawan_stack_pkg_types.NetID
+				dst.ForwarderNetID = zero
+			}
+		case "forwarder_tenant_id":
+			if len(subs) > 0 {
+				return fmt.Errorf("'forwarder_tenant_id' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.ForwarderTenantID = src.ForwarderTenantID
+			} else {
+				var zero string
+				dst.ForwarderTenantID = zero
+			}
+		case "forwarder_id":
+			if len(subs) > 0 {
+				return fmt.Errorf("'forwarder_id' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.ForwarderID = src.ForwarderID
+			} else {
+				var zero string
+				dst.ForwarderID = zero
+			}
+		case "home_network_net_id":
+			if len(subs) > 0 {
+				return fmt.Errorf("'home_network_net_id' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.HomeNetworkNetID = src.HomeNetworkNetID
+			} else {
+				var zero go_thethings_network_lorawan_stack_pkg_types.NetID
+				dst.HomeNetworkNetID = zero
+			}
+		case "home_network_tenant_id":
+			if len(subs) > 0 {
+				return fmt.Errorf("'home_network_tenant_id' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.HomeNetworkTenantID = src.HomeNetworkTenantID
+			} else {
+				var zero string
+				dst.HomeNetworkTenantID = zero
+			}
+		case "hops":
+			if len(subs) > 0 {
+				return fmt.Errorf("'hops' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.Hops = src.Hops
+			} else {
+				dst.Hops = nil
+			}
+
+		default:
+			return fmt.Errorf("invalid field: '%s'", name)
+		}
+	}
+	return nil
+}
+
+func (dst *PacketBrokerRouteHop) SetFields(src *PacketBrokerRouteHop, paths ...string) error {
+	for name, subs := range _processPaths(paths) {
+		switch name {
+		case "received_at":
+			if len(subs) > 0 {
+				return fmt.Errorf("'received_at' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.ReceivedAt = src.ReceivedAt
+			} else {
+				var zero time.Time
+				dst.ReceivedAt = zero
+			}
+		case "sender_name":
+			if len(subs) > 0 {
+				return fmt.Errorf("'sender_name' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.SenderName = src.SenderName
+			} else {
+				var zero string
+				dst.SenderName = zero
+			}
+		case "sender_address":
+			if len(subs) > 0 {
+				return fmt.Errorf("'sender_address' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.SenderAddress = src.SenderAddress
+			} else {
+				var zero string
+				dst.SenderAddress = zero
+			}
+		case "receiver_name":
+			if len(subs) > 0 {
+				return fmt.Errorf("'receiver_name' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.ReceiverName = src.ReceiverName
+			} else {
+				var zero string
+				dst.ReceiverName = zero
+			}
+		case "receiver_agent":
+			if len(subs) > 0 {
+				return fmt.Errorf("'receiver_agent' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.ReceiverAgent = src.ReceiverAgent
+			} else {
+				var zero string
+				dst.ReceiverAgent = zero
 			}
 
 		default:
