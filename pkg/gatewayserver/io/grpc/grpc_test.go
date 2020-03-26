@@ -227,7 +227,9 @@ func TestTraffic(t *testing.T) {
 						RawPayload: []byte{0x01},
 						RxMetadata: []*ttnpb.RxMetadata{
 							{
-								GatewayIdentifiers: registeredGatewayID,
+								Source: &ttnpb.RxMetadata_GatewayIDs{
+									GatewayIDs: &registeredGatewayID,
+								},
 							},
 						},
 						Settings: ttnpb.TxSettings{
@@ -250,7 +252,9 @@ func TestTraffic(t *testing.T) {
 						RawPayload: []byte{0x02},
 						RxMetadata: []*ttnpb.RxMetadata{
 							{
-								GatewayIdentifiers: registeredGatewayID,
+								Source: &ttnpb.RxMetadata_GatewayIDs{
+									GatewayIDs: &registeredGatewayID,
+								},
 							},
 						},
 						Settings: ttnpb.TxSettings{
@@ -276,7 +280,9 @@ func TestTraffic(t *testing.T) {
 						RawPayload: []byte{0x03},
 						RxMetadata: []*ttnpb.RxMetadata{
 							{
-								GatewayIdentifiers: registeredGatewayID,
+								Source: &ttnpb.RxMetadata_GatewayIDs{
+									GatewayIDs: &registeredGatewayID,
+								},
 							},
 						},
 						Settings: ttnpb.TxSettings{
@@ -295,7 +301,9 @@ func TestTraffic(t *testing.T) {
 						RawPayload: []byte{0x04},
 						RxMetadata: []*ttnpb.RxMetadata{
 							{
-								GatewayIdentifiers: registeredGatewayID,
+								Source: &ttnpb.RxMetadata_GatewayIDs{
+									GatewayIDs: &registeredGatewayID,
+								},
 							},
 						},
 						Settings: ttnpb.TxSettings{
@@ -314,7 +322,9 @@ func TestTraffic(t *testing.T) {
 						RawPayload: []byte{0x05},
 						RxMetadata: []*ttnpb.RxMetadata{
 							{
-								GatewayIdentifiers: registeredGatewayID,
+								Source: &ttnpb.RxMetadata_GatewayIDs{
+									GatewayIDs: &registeredGatewayID,
+								},
 							},
 						},
 						Settings: ttnpb.TxSettings{

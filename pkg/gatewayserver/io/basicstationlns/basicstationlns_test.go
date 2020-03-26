@@ -757,9 +757,11 @@ func TestTraffic(t *testing.T) {
 					}},
 				},
 				RxMetadata: []*ttnpb.RxMetadata{{
-					GatewayIdentifiers: ttnpb.GatewayIdentifiers{
-						GatewayID: "eui-0101010101010101",
-						EUI:       &types.EUI64{0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01},
+					Source: &ttnpb.RxMetadata_GatewayIDs{
+						GatewayIDs: &ttnpb.GatewayIdentifiers{
+							GatewayID: "eui-0101010101010101",
+							EUI:       &types.EUI64{0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01},
+						},
 					},
 					Time:        &[]time.Time{time.Unix(1548059982, 0)}[0],
 					Timestamp:   (uint32)(12666373963464220 & 0xFFFFFFFF),
@@ -821,9 +823,11 @@ func TestTraffic(t *testing.T) {
 				},
 				RxMetadata: []*ttnpb.RxMetadata{
 					{
-						GatewayIdentifiers: ttnpb.GatewayIdentifiers{
-							GatewayID: "eui-0101010101010101",
-							EUI:       &types.EUI64{0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01},
+						Source: &ttnpb.RxMetadata_GatewayIDs{
+							GatewayIDs: &ttnpb.GatewayIdentifiers{
+								GatewayID: "eui-0101010101010101",
+								EUI:       &types.EUI64{0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01},
+							},
 						},
 						Time:        &[]time.Time{time.Unix(1548059982, 0)}[0],
 						Timestamp:   (uint32)(12666373963464220 & 0xFFFFFFFF),
@@ -1367,5 +1371,4 @@ func TestPingPong(t *testing.T) {
 	case <-time.After(timeout):
 		t.Fatalf("Server pong timeout")
 	}
-
 }

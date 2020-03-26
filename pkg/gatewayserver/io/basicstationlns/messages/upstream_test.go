@@ -183,8 +183,10 @@ func TestJoinRequest(t *testing.T) {
 					}},
 				},
 				RxMetadata: []*ttnpb.RxMetadata{{
-					GatewayIdentifiers: gtwID,
-					UplinkToken:        []byte{10, 34, 10, 32, 10, 20, 101, 117, 105, 45, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 18, 8, 17, 34, 51, 68, 85, 102, 119, 136},
+					Source: &ttnpb.RxMetadata_GatewayIDs{
+						GatewayIDs: &gtwID,
+					},
+					UplinkToken: []byte{10, 34, 10, 32, 10, 20, 101, 117, 105, 45, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 18, 8, 17, 34, 51, 68, 85, 102, 119, 136},
 				}},
 				Settings: ttnpb.TxSettings{
 					CodingRate: "4/5",
@@ -228,13 +230,15 @@ func TestJoinRequest(t *testing.T) {
 				},
 				RxMetadata: []*ttnpb.RxMetadata{
 					{
-						GatewayIdentifiers: gtwID,
-						Time:               &[]time.Time{time.Unix(1548059982, 0)}[0],
-						Timestamp:          (uint32)(12666373963464220 & 0xFFFFFFFF),
-						RSSI:               89,
-						ChannelRSSI:        89,
-						SNR:                9.25,
-						UplinkToken:        []byte{10, 34, 10, 32, 10, 20, 101, 117, 105, 45, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 18, 8, 17, 34, 51, 68, 85, 102, 119, 136, 16, 156, 252, 188, 5},
+						Source: &ttnpb.RxMetadata_GatewayIDs{
+							GatewayIDs: &gtwID,
+						},
+						Time:        &[]time.Time{time.Unix(1548059982, 0)}[0],
+						Timestamp:   (uint32)(12666373963464220 & 0xFFFFFFFF),
+						RSSI:        89,
+						ChannelRSSI: 89,
+						SNR:         9.25,
+						UplinkToken: []byte{10, 34, 10, 32, 10, 20, 101, 117, 105, 45, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 18, 8, 17, 34, 51, 68, 85, 102, 119, 136, 16, 156, 252, 188, 5},
 					},
 				},
 				Settings: ttnpb.TxSettings{
@@ -342,13 +346,15 @@ func TestUplinkDataFrame(t *testing.T) {
 				},
 				RxMetadata: []*ttnpb.RxMetadata{
 					{
-						GatewayIdentifiers: gtwID,
-						Time:               &[]time.Time{time.Unix(1548059982, 0)}[0],
-						Timestamp:          (uint32)(12666373963464220 & 0xFFFFFFFF),
-						RSSI:               89,
-						ChannelRSSI:        89,
-						SNR:                9.25,
-						UplinkToken:        []byte{10, 34, 10, 32, 10, 20, 101, 117, 105, 45, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 18, 8, 17, 34, 51, 68, 85, 102, 119, 136, 16, 156, 252, 188, 5},
+						Source: &ttnpb.RxMetadata_GatewayIDs{
+							GatewayIDs: &gtwID,
+						},
+						Time:        &[]time.Time{time.Unix(1548059982, 0)}[0],
+						Timestamp:   (uint32)(12666373963464220 & 0xFFFFFFFF),
+						RSSI:        89,
+						ChannelRSSI: 89,
+						SNR:         9.25,
+						UplinkToken: []byte{10, 34, 10, 32, 10, 20, 101, 117, 105, 45, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 18, 8, 17, 34, 51, 68, 85, 102, 119, 136, 16, 156, 252, 188, 5},
 					},
 				},
 				Settings: ttnpb.TxSettings{
@@ -407,13 +413,15 @@ func TestUplinkDataFrame(t *testing.T) {
 				},
 				RxMetadata: []*ttnpb.RxMetadata{
 					{
-						GatewayIdentifiers: gtwID,
-						Time:               &[]time.Time{time.Unix(1548059982, 0)}[0],
-						Timestamp:          (uint32)(12666373963464220 & 0xFFFFFFFF),
-						RSSI:               89,
-						ChannelRSSI:        89,
-						SNR:                9.25,
-						UplinkToken:        []byte{10, 34, 10, 32, 10, 20, 101, 117, 105, 45, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 18, 8, 17, 34, 51, 68, 85, 102, 119, 136, 16, 156, 252, 188, 5},
+						Source: &ttnpb.RxMetadata_GatewayIDs{
+							GatewayIDs: &gtwID,
+						},
+						Time:        &[]time.Time{time.Unix(1548059982, 0)}[0],
+						Timestamp:   (uint32)(12666373963464220 & 0xFFFFFFFF),
+						RSSI:        89,
+						ChannelRSSI: 89,
+						SNR:         9.25,
+						UplinkToken: []byte{10, 34, 10, 32, 10, 20, 101, 117, 105, 45, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 18, 8, 17, 34, 51, 68, 85, 102, 119, 136, 16, 156, 252, 188, 5},
 					},
 				},
 				Settings: ttnpb.TxSettings{
@@ -497,12 +505,14 @@ func TestFromUplinkDataFrame(t *testing.T) {
 				},
 				RxMetadata: []*ttnpb.RxMetadata{
 					{
-						GatewayIdentifiers: gtwID,
-						Time:               &[]time.Time{time.Unix(1548059982, 0)}[0],
-						Timestamp:          (uint32)(12666373963464220 & 0xFFFFFFFF),
-						RSSI:               89,
-						SNR:                9.25,
-						UplinkToken:        []byte{10, 34, 10, 32, 10, 20, 101, 117, 105, 45, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 18, 8, 17, 34, 51, 68, 85, 102, 119, 136, 16, 156, 252, 188, 5},
+						Source: &ttnpb.RxMetadata_GatewayIDs{
+							GatewayIDs: &gtwID,
+						},
+						Time:        &[]time.Time{time.Unix(1548059982, 0)}[0],
+						Timestamp:   (uint32)(12666373963464220 & 0xFFFFFFFF),
+						RSSI:        89,
+						SNR:         9.25,
+						UplinkToken: []byte{10, 34, 10, 32, 10, 20, 101, 117, 105, 45, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 18, 8, 17, 34, 51, 68, 85, 102, 119, 136, 16, 156, 252, 188, 5},
 					},
 				},
 				Settings: ttnpb.TxSettings{
@@ -592,12 +602,14 @@ func TestJreqFromUplinkDataFrame(t *testing.T) {
 				},
 				RxMetadata: []*ttnpb.RxMetadata{
 					{
-						GatewayIdentifiers: gtwID,
-						Time:               &[]time.Time{time.Unix(1548059982, 0)}[0],
-						Timestamp:          (uint32)(12666373963464220 & 0xFFFFFFFF),
-						RSSI:               89,
-						SNR:                9.25,
-						UplinkToken:        []byte{10, 16, 10, 14, 10, 12, 116, 101, 115, 116, 45, 103, 97, 116, 101, 119, 97, 121, 16, 156, 252, 188, 5},
+						Source: &ttnpb.RxMetadata_GatewayIDs{
+							GatewayIDs: &gtwID,
+						},
+						Time:        &[]time.Time{time.Unix(1548059982, 0)}[0],
+						Timestamp:   (uint32)(12666373963464220 & 0xFFFFFFFF),
+						RSSI:        89,
+						SNR:         9.25,
+						UplinkToken: []byte{10, 16, 10, 14, 10, 12, 116, 101, 115, 116, 45, 103, 97, 116, 101, 119, 97, 121, 16, 156, 252, 188, 5},
 					},
 				},
 				Settings: ttnpb.TxSettings{

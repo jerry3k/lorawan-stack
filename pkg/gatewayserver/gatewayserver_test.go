@@ -825,12 +825,14 @@ func TestGatewayServer(t *testing.T) {
 										},
 										RxMetadata: []*ttnpb.RxMetadata{
 											{
-												GatewayIdentifiers: ids,
-												Timestamp:          100,
-												RSSI:               -69,
-												ChannelRSSI:        -69,
-												SNR:                11,
-												Location:           location,
+												Source: &ttnpb.RxMetadata_GatewayIDs{
+													GatewayIDs: &ids,
+												},
+												Timestamp:   100,
+												RSSI:        -69,
+												ChannelRSSI: -69,
+												SNR:         11,
+												Location:    location,
 											},
 										},
 										RawPayload: randomUpDataPayload(types.DevAddr{0x26, 0x01, 0xff, 0xff}, 1, 6),
@@ -857,12 +859,14 @@ func TestGatewayServer(t *testing.T) {
 										},
 										RxMetadata: []*ttnpb.RxMetadata{
 											{
-												GatewayIdentifiers: ids,
-												Timestamp:          100,
-												RSSI:               -69,
-												ChannelRSSI:        -69,
-												SNR:                11,
-												Location:           location,
+												Source: &ttnpb.RxMetadata_GatewayIDs{
+													GatewayIDs: &ids,
+												},
+												Timestamp:   100,
+												RSSI:        -69,
+												ChannelRSSI: -69,
+												SNR:         11,
+												Location:    location,
 											},
 										},
 										RawPayload: randomUpDataPayload(types.DevAddr{0x26, 0x01, 0xff, 0xff}, 1, 6),
@@ -891,12 +895,14 @@ func TestGatewayServer(t *testing.T) {
 										},
 										RxMetadata: []*ttnpb.RxMetadata{
 											{
-												GatewayIdentifiers: ids,
-												Timestamp:          100,
-												RSSI:               -112,
-												ChannelRSSI:        -112,
-												SNR:                2,
-												Location:           location,
+												Source: &ttnpb.RxMetadata_GatewayIDs{
+													GatewayIDs: &ids,
+												},
+												Timestamp:   100,
+												RSSI:        -112,
+												ChannelRSSI: -112,
+												SNR:         2,
+												Location:    location,
 											},
 										},
 										RawPayload: []byte{0xff, 0x02, 0x03}, // Garbage; doesn't get forwarded.
@@ -917,12 +923,14 @@ func TestGatewayServer(t *testing.T) {
 										},
 										RxMetadata: []*ttnpb.RxMetadata{
 											{
-												GatewayIdentifiers: ids,
-												Timestamp:          200,
-												RSSI:               -69,
-												ChannelRSSI:        -69,
-												SNR:                11,
-												Location:           location,
+												Source: &ttnpb.RxMetadata_GatewayIDs{
+													GatewayIDs: &ids,
+												},
+												Timestamp:   200,
+												RSSI:        -69,
+												ChannelRSSI: -69,
+												SNR:         11,
+												Location:    location,
 											},
 										},
 										RawPayload: randomUpDataPayload(types.DevAddr{0x26, 0x01, 0xff, 0xff}, 1, 6),
@@ -943,12 +951,14 @@ func TestGatewayServer(t *testing.T) {
 										},
 										RxMetadata: []*ttnpb.RxMetadata{
 											{
-												GatewayIdentifiers: ids,
-												Timestamp:          300,
-												RSSI:               -36,
-												ChannelRSSI:        -36,
-												SNR:                5,
-												Location:           location,
+												Source: &ttnpb.RxMetadata_GatewayIDs{
+													GatewayIDs: &ids,
+												},
+												Timestamp:   300,
+												RSSI:        -36,
+												ChannelRSSI: -36,
+												SNR:         5,
+												Location:    location,
 											},
 										},
 										RawPayload: randomJoinRequestPayload(

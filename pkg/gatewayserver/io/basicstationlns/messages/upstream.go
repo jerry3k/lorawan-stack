@@ -175,13 +175,15 @@ func (req *JoinRequest) ToUplinkMessage(ids ttnpb.GatewayIdentifiers, bandID str
 	}
 
 	rxMetadata := &ttnpb.RxMetadata{
-		GatewayIdentifiers: ids,
-		Time:               rxTime,
-		Timestamp:          timestamp,
-		RSSI:               req.RadioMetaData.UpInfo.RSSI,
-		ChannelRSSI:        req.RadioMetaData.UpInfo.RSSI,
-		SNR:                req.RadioMetaData.UpInfo.SNR,
-		UplinkToken:        ulTokenBytes,
+		Source: &ttnpb.RxMetadata_GatewayIDs{
+			GatewayIDs: &ids,
+		},
+		Time:        rxTime,
+		Timestamp:   timestamp,
+		RSSI:        req.RadioMetaData.UpInfo.RSSI,
+		ChannelRSSI: req.RadioMetaData.UpInfo.RSSI,
+		SNR:         req.RadioMetaData.UpInfo.SNR,
+		UplinkToken: ulTokenBytes,
 	}
 	up.RxMetadata = append(up.RxMetadata, rxMetadata)
 
@@ -347,13 +349,15 @@ func (updf *UplinkDataFrame) ToUplinkMessage(ids ttnpb.GatewayIdentifiers, bandI
 	}
 
 	rxMetadata := &ttnpb.RxMetadata{
-		GatewayIdentifiers: ids,
-		Time:               rxTime,
-		Timestamp:          timestamp,
-		RSSI:               updf.RadioMetaData.UpInfo.RSSI,
-		ChannelRSSI:        updf.RadioMetaData.UpInfo.RSSI,
-		SNR:                updf.RadioMetaData.UpInfo.SNR,
-		UplinkToken:        ulTokenBytes,
+		Source: &ttnpb.RxMetadata_GatewayIDs{
+			GatewayIDs: &ids,
+		},
+		Time:        rxTime,
+		Timestamp:   timestamp,
+		RSSI:        updf.RadioMetaData.UpInfo.RSSI,
+		ChannelRSSI: updf.RadioMetaData.UpInfo.RSSI,
+		SNR:         updf.RadioMetaData.UpInfo.SNR,
+		UplinkToken: ulTokenBytes,
 	}
 	up.RxMetadata = append(up.RxMetadata, rxMetadata)
 
