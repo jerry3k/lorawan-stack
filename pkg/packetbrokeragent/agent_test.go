@@ -112,10 +112,12 @@ func TestForwarder(t *testing.T) {
 						ReceivedAt: time.Date(2020, time.March, 24, 12, 0, 0, 0, time.UTC),
 						RxMetadata: []*ttnpb.RxMetadata{
 							{
-								GatewayIdentifiers: ttnpb.GatewayIdentifiers{GatewayID: "test-gateway"},
-								ChannelRSSI:        -42,
-								RSSI:               -42,
-								SNR:                10.5,
+								Source: &ttnpb.RxMetadata_GatewayIDs{
+									GatewayIDs: &ttnpb.GatewayIdentifiers{GatewayID: "test-gateway"},
+								},
+								ChannelRSSI: -42,
+								RSSI:        -42,
+								SNR:         10.5,
 								Location: &ttnpb.Location{
 									Latitude:  52.5,
 									Longitude: 4.8,
@@ -222,12 +224,14 @@ func TestForwarder(t *testing.T) {
 						ReceivedAt: time.Date(2020, time.March, 24, 12, 0, 0, 0, time.UTC),
 						RxMetadata: []*ttnpb.RxMetadata{
 							{
-								GatewayIdentifiers: ttnpb.GatewayIdentifiers{GatewayID: "test-gateway"},
-								ChannelRSSI:        4.2,
-								RSSI:               4.2,
-								SNR:                -5.5,
-								UplinkToken:        []byte("test-token"),
-								Timestamp:          123456,
+								Source: &ttnpb.RxMetadata_GatewayIDs{
+									GatewayIDs: &ttnpb.GatewayIdentifiers{GatewayID: "test-gateway"},
+								},
+								ChannelRSSI: 4.2,
+								RSSI:        4.2,
+								SNR:         -5.5,
+								UplinkToken: []byte("test-token"),
+								Timestamp:   123456,
 							},
 						},
 						Settings: ttnpb.TxSettings{
@@ -508,10 +512,19 @@ func TestHomeNetwork(t *testing.T) {
 					RawPayload: []byte{0x40, 0x44, 0x33, 0x22, 0x11, 0x01, 0x01, 0x00, 0x42, 0x1, 0x42, 0x1, 0x2, 0x3, 0x4},
 					RxMetadata: []*ttnpb.RxMetadata{
 						{
-							GatewayIdentifiers: ttnpb.GatewayIdentifiers{GatewayID: "packetbroker"},
-							ChannelRSSI:        -42,
-							RSSI:               -42,
-							SNR:                10.5,
+							Source: &ttnpb.RxMetadata_PacketBroker{
+								PacketBroker: &ttnpb.PacketBrokerMetadata{
+									MessageID:           "test",
+									ForwarderNetID:      [3]byte{0x0, 0x0, 0x42},
+									ForwarderTenantID:   "test",
+									ForwarderID:         "test",
+									HomeNetworkNetID:    [3]byte{0x0, 0x0, 0x13},
+									HomeNetworkTenantID: "test",
+								},
+							},
+							ChannelRSSI: -42,
+							RSSI:        -42,
+							SNR:         10.5,
 							Location: &ttnpb.Location{
 								Latitude:  52.5,
 								Longitude: 4.8,
@@ -600,10 +613,19 @@ func TestHomeNetwork(t *testing.T) {
 					RawPayload: []byte{0x40, 0x44, 0x33, 0x22, 0x11, 0x01, 0x01, 0x00, 0x42, 0x1, 0x42, 0x1, 0x2, 0x3, 0x4},
 					RxMetadata: []*ttnpb.RxMetadata{
 						{
-							GatewayIdentifiers: ttnpb.GatewayIdentifiers{GatewayID: "packetbroker"},
-							ChannelRSSI:        4.2,
-							RSSI:               4.2,
-							SNR:                -5.5,
+							Source: &ttnpb.RxMetadata_PacketBroker{
+								PacketBroker: &ttnpb.PacketBrokerMetadata{
+									MessageID:           "test",
+									ForwarderNetID:      [3]byte{0x0, 0x0, 0x42},
+									ForwarderTenantID:   "test",
+									ForwarderID:         "test",
+									HomeNetworkNetID:    [3]byte{0x0, 0x0, 0x13},
+									HomeNetworkTenantID: "test",
+								},
+							},
+							ChannelRSSI: 4.2,
+							RSSI:        4.2,
+							SNR:         -5.5,
 							UplinkToken: test.Must(WrapUplinkTokens([]byte("test-token"), nil, &AgentUplinkToken{
 								ForwarderNetID:    [3]byte{0x0, 0x0, 0x42},
 								ForwarderID:       "test",
