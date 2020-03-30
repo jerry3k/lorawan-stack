@@ -173,12 +173,14 @@ func simulate(cmd *cobra.Command, forUp func(*ttnpb.UplinkMessage) error, forDow
 		},
 		RxMetadata: []*ttnpb.RxMetadata{
 			{
-				GatewayIdentifiers: *gtwID,
-				Time:               uplinkParams.Time,
-				Timestamp:          uplinkParams.Timestamp,
-				RSSI:               uplinkParams.RSSI,
-				ChannelRSSI:        uplinkParams.RSSI,
-				SNR:                uplinkParams.SNR,
+				Source: &ttnpb.RxMetadata_GatewayIDs{
+					GatewayIDs: gtwID,
+				},
+				Time:        uplinkParams.Time,
+				Timestamp:   uplinkParams.Timestamp,
+				RSSI:        uplinkParams.RSSI,
+				ChannelRSSI: uplinkParams.RSSI,
+				SNR:         uplinkParams.SNR,
 			},
 		},
 	}
