@@ -44,4 +44,6 @@ export const selectLanguageConfig = () => selectApplicationConfig().language
 
 export const selectSupportLinkConfig = () => selectApplicationConfig().support_link
 
+export const selectSentryLinkConfig = () => selectApplicationConfig().sentry_link.DSN
+
 export const selectPageData = () => configSelector().PAGE_DATA
