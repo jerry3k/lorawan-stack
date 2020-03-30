@@ -33,6 +33,7 @@ import (
 	"go.thethings.network/lorawan-stack/pkg/log"
 	"go.thethings.network/lorawan-stack/pkg/ttnpb"
 	"go.thethings.network/lorawan-stack/pkg/unique"
+	"google.golang.org/grpc"
 )
 
 // DownlinkTaskQueue represents an entity, that holds downlink tasks sorted by timestamp.
@@ -576,7 +577,7 @@ func (ns *NetworkServer) generateDataDownlink(ctx context.Context, dev *ttnpb.En
 }
 
 type downlinkPath struct {
-	ttnpb.GatewayIdentifiers
+	*ttnpb.GatewayIdentifiers
 	*ttnpb.DownlinkPath
 }
 
@@ -587,29 +588,35 @@ func downlinkPathsFromMetadata(mds ...*ttnpb.RxMetadata) []downlinkPath {
 		return mds[i].SNR > mds[j].SNR
 	})
 	head := make([]downlinkPath, 0, len(mds))
+	body := make([]downlinkPath, 0, len(mds))
 	tail := make([]downlinkPath, 0, len(mds))
 	for _, md := range mds {
 		if len(md.UplinkToken) == 0 || md.DownlinkPathConstraint == ttnpb.DOWNLINK_PATH_CONSTRAINT_NEVER {
 			continue
 		}
-
 		path := downlinkPath{
-			GatewayIdentifiers: md.GatewayIdentifiers,
 			DownlinkPath: &ttnpb.DownlinkPath{
 				Path: &ttnpb.DownlinkPath_UplinkToken{
 					UplinkToken: md.UplinkToken,
 				},
 			},
 		}
-		switch md.DownlinkPathConstraint {
-		case ttnpb.DOWNLINK_PATH_CONSTRAINT_NONE:
-			head = append(head, path)
-
-		case ttnpb.DOWNLINK_PATH_CONSTRAINT_PREFER_OTHER:
+		switch s := md.Source.(type) {
+		case *ttnpb.RxMetadata_GatewayIDs:
+			path.GatewayIdentifiers = s.GatewayIDs
+			switch md.DownlinkPathConstraint {
+			case ttnpb.DOWNLINK_PATH_CONSTRAINT_NONE:
+				head = append(head, path)
+			case ttnpb.DOWNLINK_PATH_CONSTRAINT_PREFER_OTHER:
+				body = append(body, path)
+			}
+		case *ttnpb.RxMetadata_PacketBroker:
 			tail = append(tail, path)
 		}
 	}
-	return append(head, tail...)
+	res := append(head, body...)
+	res = append(res, tail...)
+	return res
 }
 
 // classAWindowsAvailableAt returns whether class A downlink can be made following up
@@ -696,6 +703,58 @@ func nonRetryableFixedPathGatewayError(err error) bool {
 	return errors.IsNotFound(err) || errors.IsDataLoss(err) || errors.IsFailedPrecondition(err)
 }
 
+type downlinkTarget interface {
+	Equal(downlinkTarget) bool
+	Schedule(context.Context, *ttnpb.DownlinkMessage, ...grpc.CallOption) (time.Duration, error)
+}
+
+type gatewayServerDownlinkTarget struct {
+	peer cluster.Peer
+}
+
+func (t *gatewayServerDownlinkTarget) Equal(target downlinkTarget) bool {
+	other, ok := target.(*gatewayServerDownlinkTarget)
+	if !ok {
+		return false
+	}
+	return other.peer == t.peer
+}
+
+func (t *gatewayServerDownlinkTarget) Schedule(ctx context.Context, msg *ttnpb.DownlinkMessage, callOpts ...grpc.CallOption) (time.Duration, error) {
+	conn, err := t.peer.Conn()
+	if err != nil {
+		return 0, err
+	}
+	res, err := ttnpb.NewNsGsClient(conn).ScheduleDownlink(ctx, msg, callOpts...)
+	if err != nil {
+		return 0, err
+	}
+	return res.Delay, nil
+}
+
+type packetBrokerDownlinkTarget struct {
+	peer cluster.Peer
+}
+
+func (t *packetBrokerDownlinkTarget) Equal(target downlinkTarget) bool {
+	_, ok := target.(*packetBrokerDownlinkTarget)
+	return ok
+}
+
+const packetBrokerScheduleDelay = 5 * time.Second
+
+func (t *packetBrokerDownlinkTarget) Schedule(ctx context.Context, msg *ttnpb.DownlinkMessage, callOpts ...grpc.CallOption) (time.Duration, error) {
+	conn, err := t.peer.Conn()
+	if err != nil {
+		return 0, err
+	}
+	_, err = ttnpb.NewNsPbaClient(conn).PublishDownlink(ctx, msg, callOpts...)
+	if err != nil {
+		return 0, err
+	}
+	return packetBrokerScheduleDelay, nil
+}
+
 // scheduleDownlinkByPaths attempts to schedule payload b using parameters in req using paths.
 // scheduleDownlinkByPaths discards req.DownlinkPaths and mutates it arbitrarily.
 // scheduleDownlinkByPaths returns the scheduled downlink or error.
@@ -707,31 +766,43 @@ func (ns *NetworkServer) scheduleDownlinkByPaths(ctx context.Context, req *ttnpb
 	logger := log.FromContext(ctx)
 
 	type attempt struct {
-		peer  cluster.Peer
+		downlinkTarget
 		paths []*ttnpb.DownlinkPath
 	}
+
 	attempts := make([]*attempt, 0, len(paths))
-	lastAttempt := func() *attempt {
-		return attempts[len(attempts)-1]
-	}
-
 	for _, path := range paths {
-		logger := logger.WithField(
-			"gateway_uid", unique.ID(ctx, path.GatewayIdentifiers),
-		)
-
-		p, err := ns.GetPeer(ctx, ttnpb.ClusterRole_GATEWAY_SERVER, path.GatewayIdentifiers)
-		if err != nil {
-			logger.WithError(err).Debug("Could not get Gateway Server")
-			continue
+		var target downlinkTarget
+		if path.GatewayIdentifiers != nil {
+			logger := logger.WithFields(log.Fields(
+				"target", "gateway_server",
+				"gateway_uid", unique.ID(ctx, path.GatewayIdentifiers),
+			))
+			peer, err := ns.GetPeer(ctx, ttnpb.ClusterRole_GATEWAY_SERVER, *path.GatewayIdentifiers)
+			if err != nil {
+				logger.WithError(err).Warn("Failed to get Gateway Server peer")
+				continue
+			}
+			target = &gatewayServerDownlinkTarget{peer}
+		} else {
+			logger := logger.WithField("target", "packet_broker_agent")
+			peer, err := ns.GetPeer(ctx, ttnpb.ClusterRole_PACKET_BROKER_AGENT, nil)
+			if err != nil {
+				logger.WithError(err).Warn("Failed to get Packet Broker Agent peer")
+				continue
+			}
+			target = &packetBrokerDownlinkTarget{peer}
 		}
 
 		var a *attempt
-		if len(attempts) > 0 && lastAttempt().peer == p {
-			a = lastAttempt()
-		} else {
+		if len(attempts) > 0 {
+			if last := attempts[len(attempts)-1]; last.Equal(target) {
+				a = last
+			}
+		}
+		if a == nil {
 			a = &attempt{
-				peer: p,
+				downlinkTarget: target,
 			}
 			attempts = append(attempts, a)
 		}
@@ -749,21 +820,15 @@ func (ns *NetworkServer) scheduleDownlinkByPaths(ctx context.Context, req *ttnpb
 				Request: req,
 			},
 		}
-
 		logger.WithField("path_count", len(req.DownlinkPaths)).Debug("Schedule downlink")
-		cc, err := a.peer.Conn()
+		delay, err := a.Schedule(ctx, down, ns.WithClusterAuth())
 		if err != nil {
 			errs = append(errs, err)
 			continue
 		}
-		res, err := ttnpb.NewNsGsClient(cc).ScheduleDownlink(ctx, down, ns.WithClusterAuth())
-		if err != nil {
-			errs = append(errs, err)
-			continue
-		}
-		transmitAt := timeNow().Add(res.Delay)
+		transmitAt := timeNow().Add(delay)
 		logger.WithFields(log.Fields(
-			"transmission_delay", res.Delay,
+			"transmission_delay", delay,
 			"transmit_at", transmitAt,
 		)).Debug("Scheduled downlink")
 		return &scheduledDownlink{
@@ -1386,7 +1451,7 @@ func (ns *NetworkServer) processDownlinkTask(ctx context.Context) error {
 					paths = make([]downlinkPath, 0, len(fixedPaths))
 					for i := range fixedPaths {
 						paths = append(paths, downlinkPath{
-							GatewayIdentifiers: fixedPaths[i].GatewayIdentifiers,
+							GatewayIdentifiers: &fixedPaths[i].GatewayIdentifiers,
 							DownlinkPath: &ttnpb.DownlinkPath{
 								Path: &ttnpb.DownlinkPath_Fixed{
 									Fixed: &fixedPaths[i],

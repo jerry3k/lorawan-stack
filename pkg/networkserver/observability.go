@@ -25,7 +25,6 @@ import (
 	"go.thethings.network/lorawan-stack/pkg/events"
 	"go.thethings.network/lorawan-stack/pkg/metrics"
 	"go.thethings.network/lorawan-stack/pkg/ttnpb"
-	"go.thethings.network/lorawan-stack/pkg/unique"
 )
 
 func defineReceiveMACAcceptEvent(name, desc string) func() events.Definition {
@@ -239,11 +238,7 @@ func registerReceiveUplink(ctx context.Context, msg *ttnpb.UplinkMessage) {
 }
 
 func registerMergeMetadata(ctx context.Context, msg *ttnpb.UplinkMessage) {
-	gtws := make(map[string]struct{}, len(msg.RxMetadata))
-	for _, md := range msg.RxMetadata {
-		gtws[unique.ID(ctx, md.GatewayIdentifiers)] = struct{}{}
-	}
-	nsMetrics.uplinkGateways.WithLabelValues(ctx).Observe(float64(len(gtws)))
+	nsMetrics.uplinkGateways.WithLabelValues(ctx).Observe(float64(len(msg.RxMetadata)))
 }
 
 func registerForwardDataUplink(ctx context.Context, msg *ttnpb.UplinkMessage) {

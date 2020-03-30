@@ -252,8 +252,10 @@ func handleClassAOTAAEU868FlowTest1_0_2(ctx context.Context, conn *grpc.ClientCo
 		go func() {
 			_, err := gsns.HandleUplink(ctx, makeUplink(
 				&ttnpb.RxMetadata{
-					GatewayIdentifiers: ttnpb.GatewayIdentifiers{
-						GatewayID: "test-gtw-1",
+					Source: &ttnpb.RxMetadata_GatewayIDs{
+						GatewayIDs: &ttnpb.GatewayIdentifiers{
+							GatewayID: "test-gtw-1",
+						},
 					},
 					SNR:         -1,
 					UplinkToken: []byte("join-request-token-1"),
@@ -267,8 +269,10 @@ func handleClassAOTAAEU868FlowTest1_0_2(ctx context.Context, conn *grpc.ClientCo
 		defer time.AfterFunc((1<<3)*test.Delay, func() {
 			_, err := gsns.HandleUplink(ctx, makeUplink(
 				&ttnpb.RxMetadata{
-					GatewayIdentifiers: ttnpb.GatewayIdentifiers{
-						GatewayID: "test-gtw-2",
+					Source: &ttnpb.RxMetadata_GatewayIDs{
+						GatewayIDs: &ttnpb.GatewayIdentifiers{
+							GatewayID: "test-gtw-2",
+						},
 					},
 					SNR:         -2,
 					UplinkToken: []byte("join-request-token-2"),
@@ -590,15 +594,19 @@ func handleClassAOTAAEU868FlowTest1_0_2(ctx context.Context, conn *grpc.ClientCo
 
 		mds := [...]*ttnpb.RxMetadata{
 			{
-				GatewayIdentifiers: ttnpb.GatewayIdentifiers{
-					GatewayID: "test-gtw-2",
+				Source: &ttnpb.RxMetadata_GatewayIDs{
+					GatewayIDs: &ttnpb.GatewayIdentifiers{
+						GatewayID: "test-gtw-2",
+					},
 				},
 				SNR:         -3.42,
 				UplinkToken: []byte("test-uplink-token-2"),
 			},
 			{
-				GatewayIdentifiers: ttnpb.GatewayIdentifiers{
-					GatewayID: "test-gtw-3",
+				Source: &ttnpb.RxMetadata_GatewayIDs{
+					GatewayIDs: &ttnpb.GatewayIdentifiers{
+						GatewayID: "test-gtw-3",
+					},
 				},
 				SNR:         -2.3,
 				UplinkToken: []byte("test-uplink-token-3"),
@@ -983,8 +991,10 @@ func handleClassAOTAAUS915FlowTest1_0_3(ctx context.Context, conn *grpc.ClientCo
 		go func() {
 			_, err := gsns.HandleUplink(ctx, makeUplink(
 				&ttnpb.RxMetadata{
-					GatewayIdentifiers: ttnpb.GatewayIdentifiers{
-						GatewayID: "test-gtw-1",
+					Source: &ttnpb.RxMetadata_GatewayIDs{
+						GatewayIDs: &ttnpb.GatewayIdentifiers{
+							GatewayID: "test-gtw-1",
+						},
 					},
 					SNR:         -1,
 					UplinkToken: []byte("join-request-token-1"),
@@ -998,8 +1008,10 @@ func handleClassAOTAAUS915FlowTest1_0_3(ctx context.Context, conn *grpc.ClientCo
 		defer time.AfterFunc((1<<3)*test.Delay, func() {
 			_, err := gsns.HandleUplink(ctx, makeUplink(
 				&ttnpb.RxMetadata{
-					GatewayIdentifiers: ttnpb.GatewayIdentifiers{
-						GatewayID: "test-gtw-2",
+					Source: &ttnpb.RxMetadata_GatewayIDs{
+						GatewayIDs: &ttnpb.GatewayIdentifiers{
+							GatewayID: "test-gtw-2",
+						},
 					},
 					SNR:         -2,
 					UplinkToken: []byte("join-request-token-2"),
@@ -1335,15 +1347,19 @@ func handleClassAOTAAUS915FlowTest1_0_3(ctx context.Context, conn *grpc.ClientCo
 
 		mds := [...]*ttnpb.RxMetadata{
 			{
-				GatewayIdentifiers: ttnpb.GatewayIdentifiers{
-					GatewayID: "test-gtw-2",
+				Source: &ttnpb.RxMetadata_GatewayIDs{
+					GatewayIDs: &ttnpb.GatewayIdentifiers{
+						GatewayID: "test-gtw-2",
+					},
 				},
 				SNR:         -3.42,
 				UplinkToken: []byte("test-uplink-token-2"),
 			},
 			{
-				GatewayIdentifiers: ttnpb.GatewayIdentifiers{
-					GatewayID: "test-gtw-3",
+				Source: &ttnpb.RxMetadata_GatewayIDs{
+					GatewayIDs: &ttnpb.GatewayIdentifiers{
+						GatewayID: "test-gtw-3",
+					},
 				},
 				SNR:         -2.3,
 				UplinkToken: []byte("test-uplink-token-3"),

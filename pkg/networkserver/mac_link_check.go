@@ -16,6 +16,7 @@ package networkserver
 
 import (
 	"context"
+	"fmt"
 
 	"go.thethings.network/lorawan-stack/pkg/events"
 	"go.thethings.network/lorawan-stack/pkg/ttnpb"
@@ -46,7 +47,12 @@ func handleLinkCheckReq(ctx context.Context, dev *ttnpb.EndDevice, msg *ttnpb.Up
 	gtws := make(map[string]struct{}, len(msg.RxMetadata))
 	maxSNR := msg.RxMetadata[0].SNR
 	for _, md := range msg.RxMetadata {
-		gtws[unique.ID(ctx, md.GatewayIdentifiers)] = struct{}{}
+		switch s := md.GetSource().(type) {
+		case *ttnpb.RxMetadata_GatewayIDs:
+			gtws[unique.ID(ctx, s.GatewayIDs)] = struct{}{}
+		case *ttnpb.RxMetadata_PacketBroker:
+			gtws[fmt.Sprintf("%s@%s/%s", s.PacketBroker.ForwarderID, s.PacketBroker.ForwarderNetID, s.PacketBroker.ForwarderTenantID)] = struct{}{}
+		}
 		if md.SNR > maxSNR {
 			maxSNR = md.SNR
 		}
