@@ -21,7 +21,6 @@ import (
 	echo "github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go.thethings.network/lorawan-stack/pkg/component"
-	"go.thethings.network/lorawan-stack/pkg/config"
 	web_errors "go.thethings.network/lorawan-stack/pkg/errors/web"
 	"go.thethings.network/lorawan-stack/pkg/web"
 	"go.thethings.network/lorawan-stack/pkg/web/oauthclient"
@@ -50,7 +49,6 @@ type FrontendConfig struct {
 	Language    string `json:"language" name:"-"`
 	SupportLink string `json:"support_link" name:"support-link" description:"The URI that the support button will point to"`
 	StackConfig `json:"stack_config" name:",squash"`
-	SentryLink  config.Sentry `json:"sentry_link" name:"sentry-link" description:"The Sentry URI used for error reporting"`
 }
 
 // Config is the configuration for the Console.
