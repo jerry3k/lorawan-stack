@@ -709,6 +709,11 @@ func (gs *GatewayServer) updateConnStats(conn connectionEntry) {
 	}
 }
 
+func sameLocation(A, B ttnpb.Location) bool {
+	return A.Latitude == B.Latitude && A.Longitude == B.Longitude &&
+		A.Altitude == B.Altitude && A.Accuracy == B.Accuracy
+}
+
 func (gs *GatewayServer) handleLocationUpdates(conn connectionEntry) {
 	ctx := conn.Context()
 
@@ -742,7 +747,7 @@ func (gs *GatewayServer) handleLocationUpdates(conn connectionEntry) {
 					antennas = conn.Gateway().Antennas
 				}
 				locations[0].Source = ttnpb.SOURCE_GPS
-				if antennas[0].Location.Equal(*locations[0]) {
+				if sameLocation(antennas[0].Location, *locations[0]) {
 					break
 				}
 				antennas[0].Location = *locations[0]
