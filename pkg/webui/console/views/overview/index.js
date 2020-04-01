@@ -70,6 +70,8 @@ const componentMap = {
   js: sharedMessages.componentJoinServer,
 }
 
+const overviewFetchingSelector = createFetchingSelector([GET_APPS_LIST_BASE, GET_GTWS_LIST_BASE])
+
 @connect(
   function(state) {
     const rights = selectUserRights(state)
@@ -77,7 +79,7 @@ const componentMap = {
     return {
       applicationCount: selectApplicationsTotalCount(state),
       gatewayCount: selectGatewaysTotalCount(state),
-      fetching: createFetchingSelector([GET_APPS_LIST_BASE, GET_GTWS_LIST_BASE])(state),
+      fetching: overviewFetchingSelector(state),
       userId: selectUserId(state),
       mayCreateApplications: mayCreateApplications.check(rights),
       mayViewApplications: mayViewApplications.check(rights),
