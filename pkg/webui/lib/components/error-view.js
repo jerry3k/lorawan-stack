@@ -15,6 +15,7 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import * as Sentry from '@sentry/browser'
+
 import PropTypes from '../../lib/prop-types'
 
 @withRouter
