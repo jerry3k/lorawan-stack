@@ -16,6 +16,7 @@ import React from 'react'
 import DOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createBrowserHistory } from 'history'
+import WebFont from 'webfontloader'
 
 import WithLocale from './lib/components/with-locale'
 import env from './lib/env'
@@ -24,6 +25,12 @@ import { EnvProvider } from './lib/components/env'
 import Init from './lib/components/init'
 
 import createStore from './oauth/store'
+
+WebFont.load({
+  google: {
+    families: ['Source Sans Pro:400,600,700', 'IBM Plex Mono:400', 'Material Icons:400'],
+  },
+})
 
 const appRoot = selectApplicationRootPath()
 const history = createBrowserHistory({ basename: `${appRoot}/` })

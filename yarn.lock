@@ -12408,7 +12408,7 @@ tslib@^1.9.0, tslib@^1.9.3:
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
 
 "ttn-lw@file:sdk/js":
-  version "3.6.0"
+  version "3.7.0-rc2"
   dependencies:
     arraybuffer-to-string "^1.0.2"
     axios "^0.19.0"
@@ -12773,6 +12773,11 @@ web-streams-polyfill@^2.0.3:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-2.0.4.tgz#67ba73e42ae7c1d6dd64498e6e0a7952fb3993eb"
   integrity sha512-hsLbiIZou2pZoht4VxfITEbCUz09YhZaaYFNICaZo7SOJrtW3/35LsJoAXeB8HITOlKpuWU0tFvtItOS2PpbsA==
+
+webfontloader@^1.6.28:
+  version "1.6.28"
+  resolved "https://registry.yarnpkg.com/webfontloader/-/webfontloader-1.6.28.tgz#db786129253cb6e8eae54c2fb05f870af6675bae"
+  integrity sha1-23hhKSU8tujq5UwvsF+HCvZnW64=
 
 webidl-conversions@^4.0.2:
   version "4.0.2"

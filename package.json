@@ -110,6 +110,7 @@
     "scroll-into-view-if-needed": "^2.2.20",
     "ttn-lw": "file:sdk/js",
     "url-polyfill": "^1.1.5",
+    "webfontloader": "^1.6.28",
     "yup": "^0.26.6"
   },
   "babel": {

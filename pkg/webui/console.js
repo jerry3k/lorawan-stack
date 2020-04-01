@@ -16,6 +16,7 @@ import React from 'react'
 import DOM from 'react-dom'
 import { createBrowserHistory } from 'history'
 import { Provider } from 'react-redux'
+import WebFont from 'webfontloader'
 
 import { EnvProvider } from './lib/components/env'
 import { BreadcrumbsProvider } from './components/breadcrumbs/context'
@@ -26,6 +27,12 @@ import { selectApplicationRootPath } from './lib/selectors/env'
 import './lib/yup-extensions'
 
 import createStore from './console/store'
+
+WebFont.load({
+  google: {
+    families: ['Source Sans Pro:400,600,700', 'IBM Plex Mono:400', 'Material Icons:400'],
+  },
+})
 
 const appRoot = selectApplicationRootPath()
 const history = createBrowserHistory({ basename: `${appRoot}/` })
