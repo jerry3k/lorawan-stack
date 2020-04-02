@@ -60,7 +60,7 @@ export default class MapWidget extends React.Component {
       <aside className={style.wrapper}>
         <div className={style.header}>
           <Message className={style.titleMessage} content={sharedMessages.location} />
-          <Link to={path}>
+          <Link secondary to={path}>
             <Message
               className={style.changeLocationMessage}
               content={sharedMessages.changeLocation}
