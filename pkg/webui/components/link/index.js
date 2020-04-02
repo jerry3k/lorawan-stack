@@ -45,6 +45,7 @@ const Link = function(props) {
     showVisited,
     intl,
     onClick,
+    secondary,
   } = props
 
   const formattedTitle = formatTitle(title, titleValues, intl.formatMessage)
@@ -54,7 +55,11 @@ const Link = function(props) {
       className={
         className
           ? classnames(className, { [style.disabled]: disabled })
-          : classnames(style.link, { [style.linkVisited]: showVisited, [style.disabled]: disabled })
+          : classnames(style.link, {
+              [style.linkVisited]: showVisited,
+              [style.disabled]: disabled,
+              [style.secondary]: secondary,
+            })
       }
       id={id}
       title={formattedTitle}
@@ -76,7 +81,9 @@ Link.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
+  onClick: PropTypes.func,
   replace: PropTypes.bool,
+  secondary: PropTypes.bool,
   showVisited: PropTypes.bool,
   target: PropTypes.string,
   title: PropTypes.message,
@@ -97,8 +104,10 @@ Link.defaultProps = {
   className: undefined,
   disabled: false,
   id: undefined,
+  onClick: () => null,
   showVisited: false,
   replace: false,
+  secondary: false,
   target: undefined,
   title: undefined,
   titleValues: undefined,
@@ -115,6 +124,7 @@ const AnchorLink = function(props) {
     target,
     children,
     showVisited,
+    secondary,
     intl,
   } = props
 
@@ -123,7 +133,12 @@ const AnchorLink = function(props) {
   return (
     <a
       className={
-        className ? className : classnames(style.link, { [style.linkVisited]: showVisited })
+        className
+          ? className
+          : classnames(style.link, {
+              [style.linkVisited]: showVisited,
+              [style.secondary]: secondary,
+            })
       }
       title={formattedTitle}
       id={id}

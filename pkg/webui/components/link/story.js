@@ -31,6 +31,22 @@ storiesOf('Link', module)
       </div>
     </div>
   ))
+  .add('Secondary', () => (
+    <div>
+      <div>
+        <span style={titleStyle}>link:</span>
+        <Link secondary to="/">
+          Show more
+        </Link>
+      </div>
+      <div>
+        <span style={titleStyle}>anchor link:</span>
+        <Link.Anchor secondary href="/">
+          Show more
+        </Link.Anchor>
+      </div>
+    </div>
+  ))
   .add('Show Visited', () => (
     <div>
       <div>

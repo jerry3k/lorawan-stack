@@ -13,17 +13,28 @@
 // limitations under the License.
 
 .link
-  color: $tc-subtle-gray
+  color: $c-active-blue
   text-decoration: none
 
   &:active,
   &:hover
-    color: $tc-deep-gray
+    color: $c-active-blue-hover
     text-decoration: underline
 
   &-visited
     &:visited
+      color: $c-active-blue-active
+
+  &.secondary
+    color: $tc-subtle-gray
+    &:active,
+    &:hover
       color: $tc-deep-gray
+
+    &-visited
+      &:visited
+        color: $tc-deep-gray
+
 
 .disabled
   pointer-events: none
