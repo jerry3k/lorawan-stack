@@ -83,7 +83,7 @@ export default class ApplicationWebhooks extends React.Component {
       <ErrorView ErrorComponent={SubViewError}>
         <Switch>
           <Route exact path={`${match.path}`} component={ApplicationWebhooksList} />
-          <Route exact path={`${match.path}/add`} component={ApplicationWebhookAdd} />
+          <Route path={`${match.path}/add`} component={ApplicationWebhookAdd} />
           <Route path={`${match.path}/:webhookId`} component={ApplicationWebhookEdit} />
         </Switch>
       </ErrorView>

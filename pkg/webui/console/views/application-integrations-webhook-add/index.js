@@ -13,70 +13,57 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { Container, Col, Row } from 'react-grid-system'
 import bind from 'autobind-decorator'
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
+import { Switch, Route } from 'react-router'
 
-import PageTitle from '../../../components/page-title'
-import Breadcrumb from '../../../components/breadcrumbs/breadcrumb'
 import { withBreadcrumb } from '../../../components/breadcrumbs/context'
-import WebhookForm from '../../components/webhook-form'
-
-import sharedMessages from '../../../lib/shared-messages'
-
+import Breadcrumb from '../../../components/breadcrumbs/breadcrumb'
+import ApplicationWebhookAddChoose from '../application-integrations-webhook-add-choose'
+import ApplicationWebhookAddForm, {
+  ApplicationWebhookAddFormWithoutBreadcrumbs,
+} from '../application-integrations-webhook-add-form'
 import { selectSelectedApplicationId } from '../../store/selectors/applications'
-
-import api from '../../api'
+import { selectWebhookTemplates } from '../../store/selectors/webhook-templates'
+import sharedMessages from '../../../lib/shared-messages'
 import PropTypes from '../../../lib/prop-types'
 
-@connect(
-  state => ({
-    appId: selectSelectedApplicationId(state),
-  }),
-  dispatch => ({
-    navigateToList: appId => dispatch(push(`/applications/${appId}/integrations/webhooks`)),
-  }),
-)
-@withBreadcrumb('apps.single.integrations.add', function(props) {
+@connect(state => ({
+  appId: selectSelectedApplicationId(state),
+  hasTemplates: selectWebhookTemplates(state).length !== 0,
+}))
+@withBreadcrumb('apps.single.integrations.webhooks.add', function(props) {
   const { appId } = props
   return (
-    <Breadcrumb path={`/applications/${appId}/integrations/add`} content={sharedMessages.add} />
+    <Breadcrumb
+      path={`/applications/${appId}/integrations/webhooks/add`}
+      content={sharedMessages.add}
+    />
   )
 })
 @bind
 export default class ApplicationWebhookAdd extends Component {
   static propTypes = {
-    appId: PropTypes.string.isRequired,
-    navigateToList: PropTypes.func.isRequired,
+    hasTemplates: PropTypes.bool.isRequired,
+    match: PropTypes.match.isRequired,
   }
-
-  async handleSubmit(webhook) {
-    const { appId } = this.props
-
-    await api.application.webhooks.create(appId, webhook)
-  }
-
-  handleSubmitSuccess() {
-    const { navigateToList, appId } = this.props
-
-    navigateToList(appId)
-  }
-
   render() {
+    const {
+      match,
+      match: { url: path },
+      hasTemplates,
+    } = this.props
+
+    // Do not render the chooser when there are no webhook templates configured
+    if (!hasTemplates) {
+      return <ApplicationWebhookAddFormWithoutBreadcrumbs match={match} />
+    }
+
     return (
-      <Container>
-        <PageTitle title={sharedMessages.addWebhook} />
-        <Row>
-          <Col lg={8} md={12}>
-            <WebhookForm
-              update={false}
-              onSubmit={this.handleSubmit}
-              onSubmitSuccess={this.handleSubmitSuccess}
-            />
-          </Col>
-        </Row>
-      </Container>
+      <Switch>
+        <Route exact path={`${path}`} component={ApplicationWebhookAddChoose} />
+        <Route path={`${path}/:templateId`} component={ApplicationWebhookAddForm} />
+      </Switch>
     )
   }
 }
